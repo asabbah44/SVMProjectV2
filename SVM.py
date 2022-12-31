@@ -1,15 +1,9 @@
 import os
 import cv2
-import itertools
-import random
 import numpy as np
-
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import f1_score, confusion_matrix, classification_report
-
 from python.libsvm import svm, svmutil
-
 import glob
 
 base_dir_train = 'train/'

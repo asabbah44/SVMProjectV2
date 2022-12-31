@@ -1,16 +1,5 @@
-import os
-import cv2
-import itertools
-import random
-import numpy as np
-from PIL import Image
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import f1_score, confusion_matrix, classification_report
-
 from python.libsvm import svm, svmutil
-from tools import grid
-import glob
 
 base_dir_train = 'train/'
 category_train = ['airplane', 'bird', 'cat', 'frog', 'horse', 'ship']
