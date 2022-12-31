@@ -88,7 +88,7 @@ print(dataset_size)
 
 (trainX, testX, trainY, testY) = dataTrain,dataTest, lablesTrain, lablesTest
 
-get_best_parameters = False
+get_best_parameters = True
 if get_best_parameters:
     grid_params = {'n_neighbors': [5, 7, 9, 11, 13, 15, 17, 19, 21,23,25],
                    'weights': ['uniform', 'distance'],
@@ -101,7 +101,7 @@ if get_best_parameters:
     print("Best hyperparameters  ", g_res.best_params_)
 
 
-startTrain= True
+startTrain= False
 if startTrain:
     # model = KNeighborsClassifier(n_neighbors=3, n_jobs=-1)
     model = KNeighborsClassifier(n_neighbors=21, weights='uniform', metric='manhattan')

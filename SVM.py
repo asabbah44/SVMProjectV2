@@ -1,9 +1,11 @@
+
 import os
+from libsvm.python.libsvm import svm,svmutil
 import cv2
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import f1_score, confusion_matrix, classification_report
-from python.libsvm import svm, svmutil
+#from python.libsvm import svm, svmutil
 import glob
 
 base_dir_train = '../data/train/'
