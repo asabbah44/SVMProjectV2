@@ -12,11 +12,19 @@ import numpy as np
 
 from sklearn.model_selection import GridSearchCV
 
-base_dir_train = 'Data/train/'
+# For server
+base_dir_train = '../data/train/'
 category_train =['airplane', 'bird', 'cat', 'frog', 'horse', 'ship']
 
-base_dir_test = 'Data/test/'
+base_dir_test = '../data/test/'
 category_test = ['airplane', 'bird', 'cat', 'frog', 'horse', 'ship']
+
+
+# base_dir_train = 'Data/train/'
+# category_train =['airplane', 'bird', 'cat', 'frog', 'horse', 'ship']
+#
+# base_dir_test = 'Data/test/'
+# category_test = ['airplane', 'bird', 'cat', 'frog', 'horse', 'ship']
 
 
 

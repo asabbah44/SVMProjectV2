@@ -6,10 +6,10 @@ from sklearn.metrics import f1_score, confusion_matrix, classification_report
 from python.libsvm import svm, svmutil
 import glob
 
-base_dir_train = 'train/'
-category_train = ['airplane', 'bird', 'cat', 'frog', 'horse', 'ship']
+base_dir_train = '../data/train/'
+category_train =['airplane', 'bird', 'cat', 'frog', 'horse', 'ship']
 
-base_dir_test = 'test/'
+base_dir_test = '../data/test/'
 category_test = ['airplane', 'bird', 'cat', 'frog', 'horse', 'ship']
 
 # libsvm constants
@@ -119,7 +119,7 @@ def classifier(kernelType=LINEAR):
     model = svmutil.svm_train(prob, param)
 
     y_hat, p_acc, p_val = svmutil.svm_predict(y_test, x_test, model, "-q -b 1")
-    print("ffffffffff",)
+
 
     print("Accuracy:", p_acc[0])
     f1 = f1_score(y_test, y_hat,average='micro')
