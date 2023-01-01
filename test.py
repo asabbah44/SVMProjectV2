@@ -2,7 +2,7 @@ import os
 import itertools
 import random
 from PIL import Image
-from python.libsvm import svm, svmutil,commonutil
+from libsvm.python.libsvm import svm, svmutil
 
 DIMENSION = 32
 ROOT_DIR = "test/"

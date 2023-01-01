@@ -25,42 +25,45 @@ le = LabelEncoder()
 def main():
     x_train, y_train = get_data_images(base_dir_train, category_train)
     x_test, y_test = get_data_images(base_dir_test, category_test)
-
+    print(x_test.shape)
+    print(y_test.shape)
     y_train = le.fit_transform(y_train)
     # features selection
     y_test = le.fit_transform(y_test)
 
     # for development and validation
     # (x_train, x_test, y_train, y_test) = train_test_split(x_test, y_test, test_size=0.25, random_state=42)
-    with open("train.txt", "w") as f:
+    festuerExtract=False
+    if festuerExtract:
+        with open("train.txt", "w") as f:
 
-        for i in range(len(x_train)):
+            for i in range(len(x_train)):
 
-            f.write(str(y_train[i]) + " ")
+                f.write(str(y_train[i]) + " ")
 
-            for j, val in enumerate(x_train[i]):
-                f.write(str(j + 1) + ":" + str(val) + " ")
-            f.write("\n")
+                for j, val in enumerate(x_train[i]):
+                    f.write(str(j + 1) + ":" + str(val) + " ")
+                f.write("\n")
 
-    with open("test.txt", "w") as f:
+        with open("test.txt", "w") as f:
 
-        for i in range(len(x_test)):
+            for i in range(len(x_test)):
 
-            f.write(str(y_test[i]) + " ")
+                f.write(str(y_test[i]) + " ")
 
-            for j, val in enumerate(x_test[i]):
-                f.write(str(j + 1) + ":" + str(val) + " ")
-            f.write("\n")
-    classifier(5)
+                for j, val in enumerate(x_test[i]):
+                    f.write(str(j + 1) + ":" + str(val) + " ")
+                f.write("\n")
+    #classifier(5)
 
 
-# Linear :  python grid.py -log2c -1,2,1 -log2g 1,1,1 -t 0 D:\SVMProject\train.txt
+# Linear :  python grid.py -log2c -1,2,1 -log2g -1,1,1 -t 0 D:\SVMProject\train.txt
 
 
 def get_data_images(base_dir, category):
     X = []
     Y = []
-
+    f=[]
     for sub in category:
         files = glob.glob(os.path.join(base_dir, sub, '*.jpg'))
         # get label from folder name
@@ -72,7 +75,6 @@ def get_data_images(base_dir, category):
             img = cv2.resize(img, (32, 32))
             # Convert image to HSV
             img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-            # Convert the image  to  vector
             x = img.flatten()
 
             X.append(x)

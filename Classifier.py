@@ -1,5 +1,5 @@
 from sklearn.metrics import f1_score, confusion_matrix, classification_report
-from python.libsvm import svm, svmutil
+from libsvm.python.libsvm import svm, svmutil
 
 base_dir_train = '../data/train/'
 category_train =['airplane', 'bird', 'cat', 'frog', 'horse', 'ship']
@@ -48,8 +48,8 @@ def classifier(kernelType=LINEAR):
     else:
         param = get_param(5)
 
-    y_train, x_train = svmutil.svm_read_problem("train.txt")
-    y_test, x_test = svmutil.svm_read_problem("test.txt")
+    y_train, x_train = svmutil.svm_read_problem("D:/data/train.txt")
+    y_test, x_test = svmutil.svm_read_problem("D:/data/test.txt")
     prob = svm.svm_problem(y_train, x_train)
     model = svmutil.svm_train(prob, param)
 
@@ -67,6 +67,7 @@ def classifier(kernelType=LINEAR):
     print("Confusion matrix:")
     print(cm)
 
-    if __name__ == "__main__":
-         classifier(LINEAR)
+
+if __name__ == "__main__":
+  classifier(LINEAR)
 

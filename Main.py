@@ -1,19 +1,60 @@
+import glob
 import os
+
 import cv2
-import matplotlib.pyplot as plt
-from python.libsvm import svmutil
+from sklearn.model_selection import train_test_split
+import numpy as np
+from sklearn.preprocessing import LabelEncoder
 
-image = cv2.imread('train/cat/0000.jpg')
-hsvImage = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-for i, col in enumerate(['b', 'g', 'r']):
-    hist = cv2.calcHist([hsvImage], [i], None, [32], [0, 32])
-    plt.plot(hist, color=col)
-    plt.xlim([0, 32])
+base_dir_train = '../data/train/'
+category_train = ['airplane', 'bird', 'cat', 'frog', 'horse', 'ship']
+def main():
+    x_train, y_train = get_data_images(base_dir_train, category_train)
 
-plt.show()
-print(hist.shape)
+    X_train, X_validate, Y_train, Y_validate = train_test_split(x_train, y_train, test_size=0.10,shuffle=True)
+
+    le = LabelEncoder()
+    Y_validate=le.fit_transform(Y_validate)
+    Create_validate=True
+    if Create_validate:
+        with open("Validate.txt", "w") as f:
+
+            for i in range(len(X_validate)):
+
+                f.write(str(Y_validate[i]) + " ")
+
+                for j, val in enumerate(X_validate[i]):
+                    f.write(str(j + 1) + ":" + str(val) + " ")
+                f.write("\n")
 
 
+def get_data_images(base_dir, category):
+    X = []
+    Y = []
+
+    for sub in category:
+        files = glob.glob(os.path.join(base_dir, sub, '*.jpg'))
+        # get label from folder name
+        label = sub
+
+        for file in files:
+            img = cv2.imread(file)
+            # Set size of image
+            img = cv2.resize(img, (32, 32))
+            # Convert image to HSV
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+            # Convert the image  to  vector
+            x = img.flatten()
+
+            X.append(x)
+            Y.append(label)
+    X = np.array(X)
+    Y = np.array(Y)
+    return X, Y
+
+
+if __name__ == "__main__":
+    main()
 
 # cv2.imshow('Original image', image)
 # cv2.imshow('HSV image', hsvImage)

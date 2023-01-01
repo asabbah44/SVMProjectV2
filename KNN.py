@@ -55,6 +55,7 @@ def praperData(base_dir, category):
 
 # encode the labels as integer
 
+
 dataTrain, lablesTrain = praperData(base_dir_train, category_train)
 
 dataTest, lablesTest = praperData(base_dir_test, category_test)
@@ -62,33 +63,16 @@ dataTest, lablesTest = praperData(base_dir_test, category_test)
 le = LabelEncoder()
 lablesTrain = le.fit_transform(lablesTrain)
 
-myset = set(lablesTrain)
-print(myset)
-
-dataset_size = lablesTrain.shape[0]
-lablesTrain = lablesTrain.reshape(dataset_size, -1)
-
 print(lablesTrain.shape)
-print(lablesTrain.shape)
-print(dataset_size)
 
 le = LabelEncoder()
 lablesTest = le.fit_transform(lablesTest)
 
-myset = set(lablesTest)
-print(myset)
-
-dataset_size = lablesTest.shape[0]
-lablesTest = lablesTest.reshape(dataset_size, -1)
-
+print(dataTrain.shape)
 print(lablesTest.shape)
-print(lablesTest.shape)
-print(dataset_size)
-
-
 (trainX, testX, trainY, testY) = dataTrain,dataTest, lablesTrain, lablesTest
 
-get_best_parameters = True
+get_best_parameters = False
 if get_best_parameters:
     grid_params = {'n_neighbors': [5, 7, 9, 11, 13, 15, 17, 19, 21,23,25],
                    'weights': ['uniform', 'distance'],
@@ -101,7 +85,7 @@ if get_best_parameters:
     print("Best hyperparameters  ", g_res.best_params_)
 
 
-startTrain= False
+startTrain= True
 if startTrain:
     # model = KNeighborsClassifier(n_neighbors=3, n_jobs=-1)
     model = KNeighborsClassifier(n_neighbors=21, weights='uniform', metric='manhattan')
