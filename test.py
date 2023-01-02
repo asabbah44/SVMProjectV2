@@ -5,21 +5,20 @@ from PIL import Image
 from libsvm.python.libsvm import svm, svmutil
 
 DIMENSION = 32
-ROOT_DIR = "test/"
+ROOT_DIR = "d:/data/test/"
 cat = "cat"
 dog = "dog"
 BIRD = "bird"
 TRUCK = "truck"
 FLOWER = "sunflower"
-CLASSES = [cat, TRUCK  # BIRD # , PIZZA, BALL, FLOWER
-           ]
+CLASSES = ['airplane', 'bird', 'cat', 'frog', 'horse', 'ship']
 
 # libsvm constants
 LINEAR = 0
 RBF = 2
 
 # Other
-USE_LINEAR = True
+USE_LINEAR = False
 IS_TUNING = False
 
 
@@ -56,10 +55,11 @@ def classify(models, dataSet):
         correct = 0
         for item in dataSet[trueClazz]:
             predClazz, prob = predict(models, item)
-            print("%s,%s,%f" % (trueClazz, predClazz, prob))
+           # print("%s,%s,%f" % (trueClazz, predClazz, prob))
             count += 1
             if trueClazz == predClazz: correct += 1
         results[trueClazz] = (count, correct)
+        print ("-------progress")
     return results
 
 
@@ -106,7 +106,7 @@ def getTrainingData(trainingData, clazz):
     return (labels, data)
 
 
-def getParam(linear=True):
+def getParam(linear=False):
     param = svm.svm_parameter("-q")
     param.probability = 1
     if (linear):

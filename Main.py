@@ -48,13 +48,13 @@ def classifier(kernelType=LINEAR):
     else:
         param = get_param(5)
 
-    y_train, x_train = svmutil.svm_read_problem("D:/SVMDS/test.txt")
-    y_test, x_test = svmutil.svm_read_problem("D:/data/Stest.txt")
+    y_train, x_train = svmutil.svm_read_problem("D:/data/htrain.txt")
+    y_test, x_test = svmutil.svm_read_problem("D:/data/htest.txt")
+    print(x_test[1])
 
-
-    prob = svm.svm_problem(y_train, x_train)
+    #prob = svm.svm_problem(y_train, x_train)
     print("problem read")
-    model = svmutil.svm_train(prob, ' -t 0 -c 1')
+    model = svmutil.svm_train(y_train,x_train, ' -t 1 -c 0.5 -g 0.0078125 ')
     print("traind")
     y_hat, p_acc, p_val = svmutil.svm_predict(y_test, x_test, model, "-q")
 

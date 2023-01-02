@@ -26,31 +26,61 @@ category_test = ['airplane', 'bird', 'cat', 'frog', 'horse', 'ship']
 # base_dir_test = 'Data/test/'
 # category_test = ['airplane', 'bird', 'cat', 'frog', 'horse', 'ship']
 
-
-
 def praperData(base_dir, category):
     X = []
     Y = []
+    His=[]
     for sub in category:
         files = glob.glob(os.path.join(base_dir, sub, '*.jpg'))
         # get label from folder name
         label = sub
-        # Loop over the files
-        for file in files:
-            img = cv2.imread(file)
-            # Set size of image
-            img = cv2.resize(img, (32, 32))
-            # Convert image to HSV
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-            # Convert the image  to  vector
-            x = img.flatten()
 
-            X.append(x)
+        for file in files:
+            His=[]
+            img = cv2.imread(file)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+            h1 = cv2.calcHist([img], [0], None, [16], [0, 256]).ravel()
+            h2 = cv2.calcHist([img], [1], None, [16], [0, 256]).ravel()
+            h3 = cv2.calcHist([img], [2], None, [16], [0, 256]).ravel()
+            His.extend(h1)
+            His.extend(h2)
+            His.extend(h3)
+
+            #print(His)
+
+            X.append(His)
+
             Y.append(label)
 
     X = np.array(X)
+
     Y = np.array(Y)
+
     return X, Y
+
+# def praperData(base_dir, category):
+#     X = []
+#     Y = []
+#     for sub in category:
+#         files = glob.glob(os.path.join(base_dir, sub, '*.jpg'))
+#         # get label from folder name
+#         label = sub
+#         # Loop over the files
+#         for file in files:
+#             img = cv2.imread(file)
+#             # Set size of image
+#             img = cv2.resize(img, (32, 32))
+#             # Convert image to HSV
+#             img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+#             # Convert the image  to  vector
+#             x = img.flatten()
+#
+#             X.append(x)
+#             Y.append(label)
+#
+#     X = np.array(X)
+#     Y = np.array(Y)
+#     return X, Y
 
 
 # encode the labels as integer
