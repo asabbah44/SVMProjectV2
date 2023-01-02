@@ -1,11 +1,11 @@
 import os
 
-from libsvm.python.libsvm import svm, svmutil
+from sklearn.preprocessing import MinMaxScaler
 import cv2
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import f1_score, confusion_matrix, classification_report
-# from python.libsvm import svm, svmutil
+from libsvm.python.libsvm import svm, svmutil,commonutil
 import glob
 
 base_dir_train = '../data/train/'
@@ -25,6 +25,12 @@ le = LabelEncoder()
 def main():
     x_train, y_train = get_data_images(base_dir_train, category_train)
     x_test, y_test = get_data_images(base_dir_test, category_test)
+
+    min_max_scaler = MinMaxScaler()
+    # feed in a numpy array
+    x_train = min_max_scaler.fit_transform(x_train)
+    x_test = min_max_scaler.fit_transform(x_test)
+
     print(x_test.shape)
     print(y_test.shape)
     y_train = le.fit_transform(y_train)
@@ -33,28 +39,34 @@ def main():
 
     # for development and validation
     # (x_train, x_test, y_train, y_test) = train_test_split(x_test, y_test, test_size=0.25, random_state=42)
-    festuerExtract=False
+    festuerExtract = True
     if festuerExtract:
-        with open("train.txt", "w") as f:
+        with open("ntrain.txt", "w") as f:
 
             for i in range(len(x_train)):
 
-                f.write(str(y_train[i]) + " ")
+                f.write(str(y_train[i]))
 
                 for j, val in enumerate(x_train[i]):
-                    f.write(str(j + 1) + ":" + str(val) + " ")
+                    if val:
+                        f.write(" " + str(j + 1) + ":" + str(val))
+                    else:
+                        f.write(" " + str(j + 1) + ":" + str(0))
                 f.write("\n")
 
-        with open("test.txt", "w") as f:
+        with open("ntest.txt", "w") as f:
 
             for i in range(len(x_test)):
 
-                f.write(str(y_test[i]) + " ")
+                f.write(str(y_test[i]))
 
                 for j, val in enumerate(x_test[i]):
-                    f.write(str(j + 1) + ":" + str(val) + " ")
+                    if val:
+                        f.write(" " + str(j + 1) + ":" + str(val))
+                    else:
+                        f.write(" " + str(j + 1) + ":" + str(0))
                 f.write("\n")
-    #classifier(5)
+    # classifier(5)
 
 
 # Linear :  python grid.py -log2c -1,2,1 -log2g -1,1,1 -t 0 D:\SVMProject\train.txt
@@ -63,7 +75,6 @@ def main():
 def get_data_images(base_dir, category):
     X = []
     Y = []
-    f=[]
     for sub in category:
         files = glob.glob(os.path.join(base_dir, sub, '*.jpg'))
         # get label from folder name

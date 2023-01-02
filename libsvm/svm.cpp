@@ -253,7 +253,7 @@ private:
 
  double kernel_CHI2(int i, int j) const // New function added by Ahmed Sabbah
 	{
-	 return get_Chi2_Result(x[i], x[j]);
+	 return 1-2*get_Chi2_Result(x[i], x[j]);
 	}
 };
 
@@ -263,24 +263,25 @@ double Kernel::get_Chi2_Result(const svm_node* x, const svm_node* y) // New func
 	
 	while (x->index != -1 && y->index != -1)
 	{
-		double numerator = x->value - y->value;
-		double denominator = x->value + y->value;
-
 		if (x->index == y->index)
 		{
-
-			sum += (numerator * numerator) / denominator;
+			double num = x->value - y->value;
+			double denum = x->value + y->value;
+			sum += num * num / (denum + DBL_MIN);
 			++x;
 			++y;
 		}
 		else
 		{
-			if (x->index > y->index)
+			if (x->index > y->index) {
+				sum += y->value;
 				++y;
-			else
+			}
+			else {
+				sum += x->value;
 				++x;
+			}
 		}
-
 	}
 	return sum;
 	
@@ -409,7 +410,7 @@ double Kernel::k_function(const svm_node *x, const svm_node *y,
 
 		case CHI_SQUARED: // added by Ahmed Sabbah
 		{
-			return get_Chi2_Result(x, y);
+			return 1-2*get_Chi2_Result(x, y);
 		}
 		break;
 		default:

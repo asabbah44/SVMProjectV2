@@ -1,84 +1,76 @@
-import glob
-import os
-
-import cv2
-from sklearn.model_selection import train_test_split
-import numpy as np
-from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import f1_score, confusion_matrix, classification_report
+from libsvm.python.libsvm import svm, svmutil,commonutil
 
 base_dir_train = '../data/train/'
-category_train = ['airplane', 'bird', 'cat', 'frog', 'horse', 'ship']
-def main():
-    x_train, y_train = get_data_images(base_dir_train, category_train)
+category_train =['airplane', 'bird', 'cat', 'frog', 'horse', 'ship']
 
-    X_train, X_validate, Y_train, Y_validate = train_test_split(x_train, y_train, test_size=0.10,shuffle=True)
+base_dir_test = '../data/test/'
+category_test = ['airplane', 'bird', 'cat', 'frog', 'horse', 'ship']
 
-    le = LabelEncoder()
-    Y_validate=le.fit_transform(Y_validate)
-    Create_validate=True
-    if Create_validate:
-        with open("Validate.txt", "w") as f:
-
-            for i in range(len(X_validate)):
-
-                f.write(str(Y_validate[i]) + " ")
-
-                for j, val in enumerate(X_validate[i]):
-                    f.write(str(j + 1) + ":" + str(val) + " ")
-                f.write("\n")
+# libsvm constants
+LINEAR = 0
+POLYNOMIAL = 1
+RBF = 2
+CHI_SQAURED = 5
 
 
-def get_data_images(base_dir, category):
-    X = []
-    Y = []
+def get_param(kernel_type=LINEAR):
+    param = svm.svm_parameter("-q")
+    param.probability = 1
+    if kernel_type == LINEAR:
+        param.kernel_type = LINEAR
+        param.C = 1
 
-    for sub in category:
-        files = glob.glob(os.path.join(base_dir, sub, '*.jpg'))
-        # get label from folder name
-        label = sub
+    elif kernel_type == POLYNOMIAL:
+        param.kernel_type = POLYNOMIAL
+        param.C = .01
+        param.gamma = .00000001
+        param.degree = 3
 
-        for file in files:
-            img = cv2.imread(file)
-            # Set size of image
-            img = cv2.resize(img, (32, 32))
-            # Convert image to HSV
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-            # Convert the image  to  vector
-            x = img.flatten()
+    elif kernel_type == RBF:
+        param.kernel_type = RBF
+        param.C = .01
+        param.gamma = .00000001
+    else:
+        param.kernel_type = CHI_SQAURED
 
-            X.append(x)
-            Y.append(label)
-    X = np.array(X)
-    Y = np.array(Y)
-    return X, Y
+    return param
+
+
+def classifier(kernelType=LINEAR):
+
+    if kernelType == LINEAR:
+        param = get_param(0)
+    elif kernelType == POLYNOMIAL:
+        param = get_param(1)
+    elif kernelType == RBF:
+        param = get_param(2)
+    else:
+        param = get_param(5)
+
+    y_train, x_train = svmutil.svm_read_problem("D:/SVMDS/test.txt")
+    y_test, x_test = svmutil.svm_read_problem("D:/data/Stest.txt")
+
+
+    prob = svm.svm_problem(y_train, x_train)
+    print("problem read")
+    model = svmutil.svm_train(prob, ' -t 0 -c 1')
+    print("traind")
+    y_hat, p_acc, p_val = svmutil.svm_predict(y_test, x_test, model, "-q")
+
+
+    print("Accuracy:", p_acc[0])
+    f1 = f1_score(y_test, y_hat,average='micro')
+
+    print("F1 score:", f1)
+    print(classification_report(y_test, y_hat, target_names=category_test))
+    # Calculate the confusion matrix
+    cm = confusion_matrix(y_test, y_hat)
+
+    print("Confusion matrix:")
+    print(cm)
 
 
 if __name__ == "__main__":
-    main()
+  classifier(LINEAR)
 
-# cv2.imshow('Original image', image)
-# cv2.imshow('HSV image', hsvImage)
-#
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
-
-# # Load the dataset and split it into training and test sets
-# X, y = load_dataset()
-# X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-#
-# # Convert the data to the format required by LibSVM
-# X_train_svm = svmutil.svm_read_problem(X_train, y_train)
-# X_test_svm = svmutil.svm_read_problem(X_test, y_test)
-#
-# # Set the SVM parameters
-# param = svmutil.svm_parameter('-t 0 -c 1')
-#
-# # Train the SVM model
-# model = svmutil.svm_train(X_train_svm, param)
-#
-# # Make predictions on the test data
-# _, y_pred, _ = svmutil.svm_predict(y_test, X_test_svm, model)
-#
-# # Calculate the accuracy of the model
-# accuracy = sum(y_pred == y_test) / len(y_test)
-# print("Accuracy:", accuracy)
