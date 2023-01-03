@@ -3,8 +3,6 @@ from sklearn.preprocessing import StandardScaler
 import cv2
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics import f1_score, confusion_matrix, classification_report
-from libsvm.python.libsvm import svm, svmutil,commonutil
 import glob
 
 base_dir_train = '../data/train/'
@@ -25,6 +23,7 @@ def main():
     x_train, y_train = get_data_images(base_dir_train, category_train)
     x_test, y_test = get_data_images(base_dir_test, category_test)
     print(x_train[1])
+
     #for normaliztion btween -1 and 1
     x_train=StandardScaler().fit_transform(x_train)
     x_test = StandardScaler().fit_transform(x_test)
@@ -33,11 +32,12 @@ def main():
     print(x_test.shape)
     print(y_test.shape)
     y_train = le.fit_transform(y_train)
-    # features selection
     y_test = le.fit_transform(y_test)
 
     # for development and validation
     # (x_train, x_test, y_train, y_test) = train_test_split(x_test, y_test, test_size=0.25, random_state=42)
+
+    # To generate the data set with Libsvm format
     festuerExtract = False
     if festuerExtract:
         with open("D:/data/ntrain.txt", "w") as f:
@@ -58,12 +58,8 @@ def main():
                 for j, val in enumerate(x_test[i]):
                    f.write(" " + str(j + 1) + ":" + str(val))
                 f.write("\n")
-    # classifier(5)
 
-
-# Linear :  python grid.py -log2c -1,2,1 -log2g -1,1,1 -t 0 D:\SVMProject\train.txt
-
-
+ # Extract data from imagees
 def get_data_images(base_dir, category):
     X = []
     Y = []

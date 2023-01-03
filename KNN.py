@@ -14,29 +14,23 @@ from sklearn.model_selection import GridSearchCV
 
 # For server
 base_dir_train = '../data/train/'
-category_train =['airplane', 'bird', 'cat', 'frog', 'horse', 'ship']
+category_train = ['airplane', 'bird', 'cat', 'frog', 'horse', 'ship']
 
 base_dir_test = '../data/test/'
 category_test = ['airplane', 'bird', 'cat', 'frog', 'horse', 'ship']
 
 
-# base_dir_train = 'Data/train/'
-# category_train =['airplane', 'bird', 'cat', 'frog', 'horse', 'ship']
-#
-# base_dir_test = 'Data/test/'
-# category_test = ['airplane', 'bird', 'cat', 'frog', 'horse', 'ship']
-
 def praperData(base_dir, category):
     X = []
     Y = []
-    His=[]
+    His = []
     for sub in category:
         files = glob.glob(os.path.join(base_dir, sub, '*.jpg'))
         # get label from folder name
         label = sub
 
         for file in files:
-            His=[]
+            His = []
             img = cv2.imread(file)
             img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
             h1 = cv2.calcHist([img], [0], None, [16], [0, 256]).ravel()
@@ -46,7 +40,7 @@ def praperData(base_dir, category):
             His.extend(h2)
             His.extend(h3)
 
-            #print(His)
+            # print(His)
 
             X.append(His)
 
@@ -58,32 +52,30 @@ def praperData(base_dir, category):
 
     return X, Y
 
-# def praperData(base_dir, category):
-#     X = []
-#     Y = []
-#     for sub in category:
-#         files = glob.glob(os.path.join(base_dir, sub, '*.jpg'))
-#         # get label from folder name
-#         label = sub
-#         # Loop over the files
-#         for file in files:
-#             img = cv2.imread(file)
-#             # Set size of image
-#             img = cv2.resize(img, (32, 32))
-#             # Convert image to HSV
-#             img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-#             # Convert the image  to  vector
-#             x = img.flatten()
-#
-#             X.append(x)
-#             Y.append(label)
-#
-#     X = np.array(X)
-#     Y = np.array(Y)
-#     return X, Y
 
+def praperDataLargeVector(base_dir, category):
+    X = []
+    Y = []
+    for sub in category:
+        files = glob.glob(os.path.join(base_dir, sub, '*.jpg'))
+        # get label from folder name
+        label = sub
+        # Loop over the files
+        for file in files:
+            img = cv2.imread(file)
+            # Set size of image
+            img = cv2.resize(img, (32, 32))
+            # Convert image to HSV
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+            # Convert the image  to  vector
+            x = img.flatten()
 
-# encode the labels as integer
+            X.append(x)
+            Y.append(label)
+
+    X = np.array(X)
+    Y = np.array(Y)
+    return X, Y
 
 
 dataTrain, lablesTrain = praperData(base_dir_train, category_train)
@@ -98,13 +90,15 @@ print(lablesTrain.shape)
 le = LabelEncoder()
 lablesTest = le.fit_transform(lablesTest)
 
-print(dataTrain.shape)
-print(lablesTest.shape)
-(trainX, testX, trainY, testY) = dataTrain,dataTest, lablesTrain, lablesTest
+print("Train shape " ,dataTrain.shape)
+print("Test Shape", lablesTest.shape)
 
+(trainX, testX, trainY, testY) = dataTrain, dataTest, lablesTrain, lablesTest
+
+# To run this hyper parameter change to true
 get_best_parameters = False
 if get_best_parameters:
-    grid_params = {'n_neighbors': [5, 7, 9, 11, 13, 15, 17, 19, 21,23,25],
+    grid_params = {'n_neighbors': [5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25],
                    'weights': ['uniform', 'distance'],
                    'metric': ['minkowski', 'euclidean', 'manhattan']}
 
@@ -114,10 +108,9 @@ if get_best_parameters:
 
     print("Best hyperparameters  ", g_res.best_params_)
 
-
-startTrain= True
+# After print the hyper parameter you can use in the next part by change flag
+startTrain = True
 if startTrain:
-    # model = KNeighborsClassifier(n_neighbors=3, n_jobs=-1)
     model = KNeighborsClassifier(n_neighbors=21, weights='uniform', metric='manhattan')
     model.fit(trainX, np.ravel(trainY))
     y_hat = model.predict(trainX)
@@ -128,4 +121,3 @@ if startTrain:
     print(confusion_matrix(testY, y_knn))
 
     print(classification_report(testY, y_knn, target_names=le.classes_))
-    # print(classification_report(testY, model.predict(testX), target_names=le.classes_))
