@@ -5,3 +5,5 @@
  1) SVM.py : for preparing data and extracting the features from images and creating train.txt, test.txt
  2) classifier.py : to start the classification process using Libsvm.
  3) KNN: include prepare data, hyperparameters, and classification 
+ 
+The Chi-square kernel was added in the file svm.cpp in the libsvm folder.
